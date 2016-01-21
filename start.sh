@@ -59,8 +59,8 @@ generate_domain_folders() {
     done
 
     #make keys accessible by mail user
-		chown -R root:mail /etc/letsencrypt/archive
-		chmod -R 640 /etc/letsencrypt/archive
+    chown -R root:mail /etc/letsencrypt/archive
+    chmod -R 640 /etc/letsencrypt/archive
 }
 
 le_renew() {
