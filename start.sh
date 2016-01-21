@@ -50,8 +50,22 @@ le_hook() {
     done
 }
 
+generate_domain_folders() {
+    root_domain="./$DARRAYS"
+
+    cd "/etc/letsencrypt/live/"
+    for domain in ${DARRAYS[@]}; do
+        ln -s "$root_domain" "./$domain"
+    done
+
+    #make keys accessible by mail user
+		chown -R root:mail /etc/letsencrypt/archive
+		chmod -R 640 /etc/letsencrypt/archive
+}
+
 le_renew() {
     letsencrypt certonly --webroot --agree-tos --renew-by-default --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
+    generate_domain_folders
     le_hook
 }
 
