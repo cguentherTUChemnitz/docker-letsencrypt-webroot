@@ -51,26 +51,28 @@ le_hook() {
 }
 
 generate_domain_folders() {
-    root_domain="./$DARRAYS"
+    root_domain="$DARRAYS"
 
     cd "/etc/letsencrypt/live/"
     for domain in ${DARRAYS[@]}; do
         #process only alternative domain names
-        if [ "$root_domain" != "./$domain" ] ; then
+        if [ "./$root_domain" != "./$domain" ] ; then
             #if directory alraidy exist, then remove it
             if [ -d "./$domain" ]; then
               rm -r -f "./$domain"
             fi
             #create a symlink to the main domain folder
-            ln -s "$root_domain" "./$domain"
+            ln -s "./$root_domain" "./$domain"
         fi
     done
 
-    #make keys accessible by mail user
-    chown -R root:mail /etc/letsencrypt/archive
-    chmod -R 640 /etc/letsencrypt/archive
-    #give read access for correct running imap
+    #give read access for corrcect running imap
     chmod -R o+r /etc/letsencrypt
+    #make keys accessible by mail user
+    chown -R :mail "./$root_domain/"
+    chmod -R 750   "./$root_domain/"
+    chown -R :mail /etc/letsencrypt/archive
+    chmod -R 750   /etc/letsencrypt/archive
 }
 
 le_renew() {
