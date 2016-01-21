@@ -55,12 +55,22 @@ generate_domain_folders() {
 
     cd "/etc/letsencrypt/live/"
     for domain in ${DARRAYS[@]}; do
-        ln -s "$root_domain" "./$domain"
+        #process only alternative domain names
+        if [ "$root_domain" != "./$domain" ] ; then
+            #if directory alraidy exist, then remove it
+            if [ -d "./$domain" ]; then
+              rm -r -f "./$domain"
+            fi
+            #create a symlink to the main domain folder
+            ln -s "$root_domain" "./$domain"
+        fi
     done
 
     #make keys accessible by mail user
     chown -R root:mail /etc/letsencrypt/archive
     chmod -R 640 /etc/letsencrypt/archive
+    #give read access for correct running imap
+    chmod -R o+r /etc/letsencrypt
 }
 
 le_renew() {
